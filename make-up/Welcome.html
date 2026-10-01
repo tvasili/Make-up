@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Up By Me</title>
+    <style>
+      body {
+        font-family: serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        scroll-behavior: smooth;
+      }
+
+      #blockedOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #ffffff;
+        z-index: 9999;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: sans-serif;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      #blockedOverlay h2 {
+        font-size: 22px;
+        color: #262626;
+        margin-bottom: 10px;
+        font-family: Georgia, serif;
+      }
+
+      #blockedOverlay p {
+        color: #8e8e8e;
+        font-size: 14px;
+        max-width: 350px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      #blockedOverlay button {
+        background-color: #0095f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s;
+      }
+
+      #blockedOverlay button:hover {
+        background-color: #0077c2;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animated-section {
+        animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+      }
+
+      .delay-1 {
+        animation-delay: 0.2s;
+        opacity: 0;
+      }
+
+      .delay-2 {
+        animation-delay: 0.4s;
+        opacity: 0;
+      }
+
+      .nav1 ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-around;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+      }
+
+      .nav1 a {
+        color: white;
+        text-decoration: none;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        display: block;
+        position: relative;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+      }
+
+      .nav1 {
+        background: linear-gradient(135deg, #eabad8 0%, #d89bc4 100%);
+        padding: 14px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .nav1 a::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: #ffffff;
+        transform: scaleX(0);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .nav1 a:hover::after {
+        transform: scaleX(1);
+      }
+
+      .nav1 .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 320px;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-radius: 16px;
+        z-index: 100;
+        padding: 16px;
+        border: 1px solid #dbdbdb;
+      }
+
+      .nav1 .dropdown.active .dropdown-content {
+        display: block !important;
+      }
+
+      .nav1 .dropdown {
+        position: relative;
+      }
+
+      .image-container {
+        position: relative;
+        display: inline-block;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .profilo > .image-container > img {
+        max-width: 450px;
+        width: 100%;
+        padding: 40px;
+        display: block;
+        border-radius: 50%;
+        transition: transform 0.5s ease;
+      }
+
+      .image-container::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.6) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(30deg) translateY(-100%);
+        transition: transform 0.7s ease-in-out;
+        pointer-events: none;
+      }
+
+      .image-container:hover::after {
+        transform: rotate(30deg) translateY(100%);
+      }
+
+      .image-container:hover img {
+        transform: scale(1.05);
+      }
+
+      .dots-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #d89bc4;
+        padding: 5px;
+        font-size: 18px;
+        transition: transform 0.2s;
+      }
+
+      .dots-button:hover {
+        transform: scale(1.2);
+      }
+
+      .profilo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-left: 100px;
+        margin-top: 30px;
+      }
+
+      .username {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 600;
+        color: #2b2b2b;
+      }
+
+      .stories-bar {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 35px;
+        padding: 20px 30px;
+        margin: 20px auto 50px auto;
+        max-width: 600px;
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid rgba(235, 210, 225, 0.8);
+        box-shadow: 0 4px 20px rgba(216, 155, 196, 0.15);
+      }
+
+      .story-circle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        font-family: sans-serif;
+        width: 82px;
+        position: relative;
+        z-index: 2;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .story-circle:hover {
+        transform: translateY(-6px) scale(1.03);
+      }
+
+      .story-img-wrapper {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        padding: 3px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 16px rgba(216, 155, 196, 0.25);
+      }
+
+      .story-circle.active .story-img-wrapper {
+        background: linear-gradient(
+          45deg,
+          #f09433 0%,
+          #e6683c 25%,
+          #dc2743 50%,
+          #cc2366 75%,
+          #bc1888 100%
+        );
+      }
+
+      .story-circle.seen .story-img-wrapper {
+        background: #dcdcdc;
+      }
+
+      .story-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+      }
+
+      .story-circle span {
+        margin-top: 8px;
+        color: #444;
+        font-weight: 500;
+        font-size: 12px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+
+      .instagram-menu {
+        border: none;
+        border-radius: 16px;
+        padding: 0;
+        width: 380px;
+        max-width: 90%;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        background: #ffffff;
+      }
+
+      .instagram-menu::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+      }
+
+      .menu-options {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .menu-options button,
+      .menu-options a {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 16px;
+        font-size: 14px;
+        width: 100%;
+        cursor: pointer;
+        text-align: center;
+        color: #333;
+        font-family: inherit;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+
+      .menu-options button:hover,
+      .menu-options a:hover {
+        background-color: #faf5f8;
+      }
+
+      .menu-options button.danger {
+        color: #ff3b30;
+        font-weight: 600;
+      }
+
+      .share-sub-menu {
+        background-color: #fbf7fa;
+        display: none;
+        flex-direction: column;
+      }
+
+      .share-sub-menu a {
+        font-size: 13px;
+        color: #666;
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .story-view-modal {
+        border: none;
+        background: transparent;
+        padding: 0;
+        width: 100%;
+        max-width: 400px;
+        height: 85vh;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .story-view-modal::backdrop {
+        background: rgba(0, 0, 0, 0.95);
+      }
+
+      .story-view-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #111;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #storyContentImage {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        max-height: calc(100% - 130px);
+        display: block;
+      }
+
+      .story-header {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-sizing: border-box;
+        color: white;
+        font-weight: bold;
+        z-index: 20;
+      }
+
+      .story-header button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+      }
+
+      .story-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        font-size: 22px;
+        padding: 12px 16px;
+        cursor: pointer;
+        z-index: 25;
+        border-radius: 50%;
+        transition: background 0.2s;
+      }
+
+      .story-nav-btn:hover {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      #prevStoryBtn {
+        left: 10px;
+      }
+
+      #nextStoryBtn {
+        right: 10px;
+      }
+
+      .story-footer-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        box-sizing: border-box;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        z-index: 20;
+      }
+
+      .story-comment-input {
+        flex-grow: 1;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 10px 16px;
+        color: white;
+        font-size: 13px;
+        outline: none;
+      }
+
+      .story-comment-input::placeholder {
+        color: #ddd;
+      }
+
+      .story-action-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+        transition: transform 0.2s ease;
+      }
+
+      .story-action-btn:hover {
+        transform: scale(1.15);
+      }
+
+      .story-heart-btn {
+        transition: transform 0.2s ease;
+      }
+
+      .story-heart-btn.liked {
+        transform: scale(1.3);
+        color: #ff3b30;
+      }
+
+      .products-section {
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 0 40px;
+      }
+
+      .products-header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .products-header h3 {
+        font-size: 36px;
+        color: #1a1a1a;
+        font-family: Georgia, serif;
+        margin-bottom: 12px;
+        font-weight: 400;
+      }
+
+      .products-header p {
+        color: #7a7a7a;
+        font-size: 16px;
+        font-family: sans-serif;
+      }
+
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+      }
+
+      .product-card {
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(216, 155, 196, 0.12);
+        border: 1px solid rgba(235, 210, 225, 0.6);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.4s ease;
+      }
+
+      .product-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .product-image-container {
+        position: relative;
+        width: 100%;
+        height: 280px;
+        background: linear-gradient(135deg, #fefbfc 0%, #f6eef3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .product-image-container img {
+        max-width: 75%;
+        max-height: 75%;
+        object-fit: contain;
+      }
+
+      .product-badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: rgba(216, 155, 196, 0.85);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 30px;
+        text-transform: uppercase;
+      }
+
+      .product-info {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        font-family: sans-serif;
+      }
+
+      .product-title {
+        font-size: 20px;
+        font-weight: 500;
+        color: #2b2b2b;
+        margin: 0 0 10px 0;
+        font-family: Georgia, serif;
+      }
+
+      .product-description {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 24px 0;
+        line-height: 1.6;
+      }
+
+      .product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid #f2edf1;
+        padding-top: 20px;
+        margin-top: auto;
+      }
+
+      .product-btn {
+        background-color: #2b2b2b;
+        color: #ffffff;
+        border: none;
+        border-radius: 30px;
+        padding: 12px 24px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.3s ease;
+      }
+
+      .product-btn:hover {
+        background-color: #d89bc4;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="blockedOverlay">
+      <h2>Utente Bloccato</h2>
+      <p>Hai bloccato questo utente. Non puoi più vedere i suoi contenuti.</p>
+      <button onclick="unblockUser()">Sblocca utente</button>
+    </div>
+
+    <div class="nav-container" id="topPage">
+      <nav class="nav1">
+        <ul>
+          <li>
+            <a
+              href="#"
+              onclick="
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return false;
+              "
+              >HOME</a
+            >
+          </li>
+          <li>
+            <a
+              href="#servizi"
+              onclick="
+                document
+                  .querySelector('.products-section')
+                  .scrollIntoView({ behavior: 'smooth' });
+                return false;
+              "
+              >I miei servizi</a
+            >
+          </li>
+          <li class="dropdown" id="messagesDropdown">
+            <a href="#" onclick="toggleMessages(event)">Messaggi</a>
+            <div class="dropdown-content" onclick="event.stopPropagation()">
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                  margin-bottom: 12px;
+                  border-bottom: 1px solid #efefef;
+                  padding-bottom: 10px;
+                "
+              >
+                <span style="font-size: 20px">👤</span>
+                <div style="flex-grow: 1">
+                  <p
+                    style="
+                      margin: 0;
+                      font-weight: 600;
+                      color: #262626;
+                      font-size: 14px;
+                    "
+                  >
+                    makeupbyme☑️
+                  </p>
+                  <p style="margin: 0; font-size: 11px; color: #8e8e8e">
+                    Salone di Bellezza & Trattamenti Viso
+                  </p>
+                </div>
+                <button
+                  onclick="closeMessages(event)"
+                  style="
+                    background: #f0f0f0;
+                    border: none;
+                    font-size: 12px;
+                    font-weight: 600;
+                    padding: 5px 10px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                  "
+                >
+                  Chiudi
+                </button>
+              </div>
+              <div
+                id="chatMessagesContainer"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                  max-height: 220px;
+                  overflow-y: auto;
+                  margin-bottom: 8px;
+                "
+              >
+                <div
+                  style="
+                    align-self: flex-start;
+                    background: #efefef;
+                    color: #262626;
+                    padding: 10px 14px;
+                    border-radius: 14px;
+                    font-size: 13px;
+                    max-width: 85%;
+                  "
+                >
+                  Benvenuto! Cosa possiamo offrire? Scegli fra i
+                  <b>trattamenti</b> o i <b>trucchi</b>.
+                </div>
+              </div>
+              <div
+                style="
+                  border-top: 1px solid #efefef;
+                  padding-top: 8px;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                "
+              >
+                <input
+                  type="text"
+                  id="chatInput"
+                  placeholder="Scrivi qui..."
+                  style="
+                    flex-grow: 1;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 20px;
+                    padding: 8px 12px;
+                    font-size: 12px;
+                    outline: none;
+                  "
+                  onkeypress="handleKeyPress(event)"
+                />
+                <button
+                  onclick="sendDirectMessage()"
+                  style="
+                    background: none;
+                    border: none;
+                    color: #0095f6;
+                    font-weight: 600;
+                    font-size: 13px;
+                    cursor: pointer;
+                  "
+                >
+                  Invia
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <main>
+      <div class="profilo animated-section delay-1">
+        <div class="image-container">
+          <img
+            src="Screenshot_2026-09-30_101245-removebg-preview.png"
+            alt="Profile Image"
+          />
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-left: 40px;
+          "
+        >
+          <span class="username">
+            makeupbyme☑️
+            <button
+              class="dots-button"
+              id="openMenu"
+              aria-label="Altre opzioni"
+              onclick="document.getElementById('instaDialog').showModal()"
+            >
+              &bull;&bull;&bull;
+            </button>
+          </span>
+
+          <div style="display: flex; gap: 30px; font-size: 15px; color: #333">
+            <p style="margin: 0"><b id="followerCount">80000</b> follower</p>
+            <p style="margin: 0"><b id="followingCount">500</b> seguiti</p>
+          </div>
+
+          <p style="margin: 0; color: #777; font-size: 14px; font-weight: 500">
+            Trattamenti Viso & Beauty Professional 💄✨
+          </p>
+
+          <div style="display: flex; gap: 12px; margin-top: 5px">
+            <button
+              id="btnSegui"
+              style="
+                background-color: #2b6cb0;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 24px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+              "
+              onclick="toggleFollow(this)"
+            >
+              Segui
+            </button>
+
+            <button
+              style="
+                background-color: #f0e4ec;
+                color: #2b2b2b;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 24px;
+                font-weight: 600;
+                cursor: pointer;
+              "
+              onclick="toggleMessagesFromButton()"
+            >
+              Messaggi
+            </button>
+          </div>
+        </div>
+
+        <dialog id="instaDialog" class="instagram-menu">
+          <div class="menu-options">
+            <button class="danger" id="actionBlocca" onclick="blockUser()">
+              Blocca utente
+            </button>
+            <button
+              class="danger"
+              id="actionRestrizioni"
+              onclick="restrictUser()"
+            >
+              Applica restrizioni
+            </button>
+            <button
+              id="actionCondividiMenu"
+              style="font-weight: 600"
+              onclick="toggleShareSubMenu()"
+            >
+              Condividi profilo su...
+            </button>
+            <div id="socialShareOptions" class="share-sub-menu">
+              <a
+                href="https://api.whatsapp.com/send?text=Guarda%20questo%20profilo!"
+                target="_blank"
+                >➔ Condividi su WhatsApp</a
+              >
+              <a
+                href="https://www.facebook.com/sharer/sharer.php?u="
+                target="_blank"
+                >➔ Condividi su Facebook</a
+              >
+            </div>
+            <button id="actionIncorpora" onclick="embedProfile()">
+              Incorpora
+            </button>
+            <button
+              id="closeMenu"
+              onclick="document.getElementById('instaDialog').close()"
+              style="font-weight: 600; color: #555"
+            >
+              Annulla
+            </button>
+          </div>
+        </dialog>
+      </div>
+
+      <div class="stories-bar animated-section delay-1" id="storiesBar">
+        <div class="story-circle active" onclick="openStoryByIndex(0)">
+          <div class="story-img-wrapper">
+            <img
+              src="5060491385494_6_9a79e7dc-7a80-414d-9dd5-44d72947ff66.webp"
+              alt="Skin Care Story"
+            />
+          </div>
+          <span>Skincare ✨</span>
+        </div>
+        <div class="story-circle active" onclick="openStoryByIndex(1)">
+          <div class="story-img-wrapper">
+            <img
+              src="3245119-acquerello-illustrazione-sposa-abito-bianco-e-velo-vettoriale.jpg"
+              alt="Studio Story"
+            />
+          </div>
+          <span>Eventi❤️</span>
+        </div>
+        <div class="story-circle active" onclick="openStoryByIndex(2)">
+          <div class="story-img-wrapper">
+            <img src="story.png" alt="Glam Story" />
+          </div>
+          <span>Glam 🪷</span>
+        </div>
+      </div>
+
+      <section class="products-section animated-section delay-2" id="servizi">
+        <div class="products-header">
+          <h3>I Miei Servizi di Trattamenti Viso</h3>
+          <p>
+            Scegli il trattamento ideale per donare nuova luce e freschezza alla
+            tua pelle
+          </p>
+        </div>
+        <div class="products-grid">
+          <div class="product-card">
+            <div class="product-image-container">
+              <span class="product-badge">Top</span>
+              <img src="images.jpg" alt="Trattamenti Anti-age e Illuminanti" />
+            </div>
+            <div class="product-info">
+              <h4 class="product-title">Trattamenti Anti-age e Illuminanti</h4>
+              <p class="product-description">
+                Utilizzo di sieri concentrati, vitamine e maschere specifiche
+                per rimpolpare e ringiovanire la pelle del viso.
+              </p>
+              <div class="product-footer">
+                <button
+                  class="product-btn"
+                  onclick="
+                    startBooking('Trattamento Anti-age e Illuminante', '50£')
+                  "
+                >
+                  Prenota ora (50£)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-image-container">
+              <span class="product-badge">Spa</span>
+              <img src="spa.jpg" alt="Trattamenti Viso Spa" />
+            </div>
+            <div class="product-info">
+              <h4 class="product-title">Trattamenti Viso Spa</h4>
+              <p class="product-description">
+                Pulizia profonda, detossinante e idratazione intensa per una
+                pelle pulita, liscia e luminosa.
+              </p>
+              <div class="product-footer">
+                <button
+                  class="product-btn"
+                  onclick="startBooking('Trattamento Viso Spa', '70£')"
+                >
+                  Prenota ora (70£)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="storyModal" class="story-view-modal">
+      <div class="story-view-container">
+        <div class="story-header">
+          <span id="storyUsername">@makeupbyme</span>
+          <button onclick="document.getElementById('storyModal').close()">
+            &times;
+          </button>
+        </div>
+        <button class="story-nav-btn" id="prevStoryBtn" onclick="prevStory()">
+          &#10094;
+        </button>
+        <button class="story-nav-btn" id="nextStoryBtn" onclick="nextStory()">
+          &#10095;
+        </button>
+        <img id="storyContentImage" src="" alt="Story Content" />
+        <div class="story-footer-actions">
+          <input
+            type="text"
+            class="story-comment-input"
+            id="storyCommentInput"
+            placeholder="Rispondi alla storia..."
+            onkeypress="handleStoryComment(event)"
+          />
+          <button
+            class="story-action-btn story-heart-btn"
+            id="storyHeartBtn"
+            onclick="toggleStoryHeart()"
+          >
+            🤍
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <script>
+      const storiesData = [
+        {
+          image: "5060491385494_6_9a79e7dc-7a80-414d-9dd5-44d72947ff66.webp",
+          username: "@makeupbyme",
+        },
+        {
+          image:
+            "3245119-acquerello-illustrazione-sposa-abito-bianco-e-velo-vettoriale.jpg",
+          username: "@makeupbyme",
+        },
+        {
+          image: "story.png",
+          username: "@makeupbyme",
+        },
+      ];
+      let currentStoryIndex = 0;
+
+      let bookingState = {
+        step: 0, // 0: iniziale, 1: attesa nome, 2: attesa data
+        serviceType: "",
+        clientName: "",
+        clientDate: "",
+      };
+
+      function openStoryByIndex(index) {
+        currentStoryIndex = index;
+        updateStoryView();
+        const circles = document.querySelectorAll(".story-circle");
+        if (circles[index]) {
+          circles[index].classList.remove("active");
+          circles[index].classList.add("seen");
+        }
+        document.getElementById("storyModal").showModal();
+      }
+
+      function updateStoryView() {
+        const story = storiesData[currentStoryIndex];
+        document.getElementById("storyContentImage").src = story.image;
+        document.getElementById("storyUsername").innerText = story.username;
+        const heartBtn = document.getElementById("storyHeartBtn");
+        heartBtn.innerText = "🤍";
+        heartBtn.classList.remove("liked");
+        document.getElementById("storyCommentInput").value = "";
+      }
+
+      function nextStory() {
+        if (currentStoryIndex < storiesData.length - 1) {
+          currentStoryIndex++;
+          updateStoryView();
+        } else {
+          document.getElementById("storyModal").close();
+        }
+      }
+
+      function prevStory() {
+        if (currentStoryIndex > 0) {
+          currentStoryIndex--;
+          updateStoryView();
+        }
+      }
+
+      function toggleStoryHeart() {
+        const heartBtn = document.getElementById("storyHeartBtn");
+        if (heartBtn.classList.contains("liked")) {
+          heartBtn.innerText = "🤍";
+          heartBtn.classList.remove("liked");
+        } else {
+          heartBtn.innerText = "❤️";
+          heartBtn.classList.add("liked");
+        }
+      }
+
+      function handleStoryComment(event) {
+        if (event.key === "Enter") {
+          const input = document.getElementById("storyCommentInput");
+          if (input.value.trim() !== "") {
+            alert("Risposta inviata alla storia!");
+            input.value = "";
+          }
+        }
+      }
+
+      function toggleFollow(button) {
+        const followerCountEl = document.getElementById("followerCount");
+        let currentFollowers = parseInt(followerCountEl.innerText);
+        if (button.innerText.trim() === "Segui") {
+          button.innerText = "Seguito";
+          button.style.backgroundColor = "#dbdbdb";
+          button.style.color = "#262626";
+          followerCountEl.innerText = currentFollowers + 1;
+        } else {
+          button.innerText = "Segui";
+          button.style.backgroundColor = "#2b6cb0";
+          button.style.color = "white";
+          followerCountEl.innerText = currentFollowers - 1;
+        }
+      }
+
+      function toggleMessages(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        const dropdown = document.getElementById("messagesDropdown");
+        dropdown.classList.toggle("active");
+      }
+
+      function closeMessages(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        document.getElementById("messagesDropdown").classList.remove("active");
+      }
+
+      function toggleMessagesFromButton() {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const dropdown = document.getElementById("messagesDropdown");
+        dropdown.classList.add("active");
+      }
+
+      function startBooking(serviceName, price) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const dropdown = document.getElementById("messagesDropdown");
+        dropdown.classList.add("active");
+
+        bookingState.step = 1;
+        bookingState.serviceType = serviceName + " (" + price + ")";
+
+        const container = document.getElementById("chatMessagesContainer");
+        const botMsg = document.createElement("div");
+        botMsg.style.alignSelf = "flex-start";
+        botMsg.style.background = "#efefef";
+        botMsg.style.color = "#262626";
+        botMsg.style.padding = "10px 14px";
+        botMsg.style.borderRadius = "14px";
+        botMsg.style.fontSize = "13px";
+        botMsg.style.maxWidth = "85%";
+        botMsg.innerHTML = `Hai scelto "${bookingState.serviceType}". Per favore, scrivi qui il tuo <b>nome</b>:`;
+
+        container.appendChild(botMsg);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === "Enter") {
+          sendDirectMessage();
+        }
+      }
+
+      function sendDirectMessage() {
+        const input = document.getElementById("chatInput");
+        const container = document.getElementById("chatMessagesContainer");
+        const text = input.value.trim();
+
+        if (text === "") return;
+
+        // Mostra il messaggio dell'utente nella chat
+        const userMsg = document.createElement("div");
+        userMsg.style.alignSelf = "flex-end";
+        userMsg.style.background = "#0095f6";
+        userMsg.style.color = "white";
+        userMsg.style.padding = "10px 14px";
+        userMsg.style.borderRadius = "14px";
+        userMsg.style.fontSize = "13px";
+        userMsg.style.maxWidth = "85%";
+        userMsg.innerText = text;
+        container.appendChild(userMsg);
+        input.value = "";
+        container.scrollTop = container.scrollHeight;
+
+        // Logica di risposta automatica e presa dati
+        setTimeout(() => {
+          const botMsg = document.createElement("div");
+          botMsg.style.alignSelf = "flex-start";
+          botMsg.style.background = "#efefef";
+          botMsg.style.color = "#262626";
+          botMsg.style.padding = "10px 14px";
+          botMsg.style.borderRadius = "14px";
+          botMsg.style.fontSize = "13px";
+          botMsg.style.maxWidth = "85%";
+
+          if (bookingState.step === 0) {
+            const lowerText = text.toLowerCase();
+            if (
+              lowerText.includes("trattamenti") ||
+              lowerText.includes("trattamento")
+            ) {
+              bookingState.serviceType = "Trattamento Viso";
+              bookingState.step = 1;
+              botMsg.innerHTML =
+                "Ottima scelta! Abbiamo trattamenti Anti-age e Spa. Per favore, dimmi il tuo <b>nome</b>:";
+            } else if (
+              lowerText.includes("trucchi") ||
+              lowerText.includes("trucco")
+            ) {
+              bookingState.serviceType = "Servizio Trucco";
+              bookingState.step = 1;
+              botMsg.innerHTML =
+                "Perfetto! I nostri trucchi sono professionali per ogni evento. Per favore, dimmi il tuo <b>nome</b>:";
+            } else {
+              botMsg.innerHTML =
+                "Cosa possiamo offrire? Scegli fra i <b>trattamenti</b> o i <b>trucchi</b> (oppure clicca su 'Prenota ora' sui nostri servizi).";
+            }
+          } else if (bookingState.step === 1) {
+            bookingState.clientName = text;
+            bookingState.step = 2;
+            botMsg.innerHTML = `Piacere di conoscerti, <b>${bookingState.clientName}</b>! Qual è la **data** in cui vorresti prendere l'appuntamento?`;
+          } else if (bookingState.step === 2) {
+            bookingState.clientDate = text;
+            bookingState.step = 3;
+            botMsg.innerHTML = `Perfetto ${bookingState.clientName}! Abbiamo registrato la tua richiesta per <b>${bookingState.serviceType}</b> in data <b>${bookingState.clientDate}</b>. Ti ricontatteremo presto per la conferma. A presto! ✨`;
+          } else {
+            botMsg.innerHTML =
+              "La tua prenotazione è già stata registrata! Se desideri un altro appuntamento ricarica la pagina.";
+          }
+
+          container.appendChild(botMsg);
+          container.scrollTop = container.scrollHeight;
+        }, 500);
+      }
+
+      // Funzioni extra per i bottoni del menu (tre pallini)
+      function blockUser() {
+        document.getElementById("instaDialog").close();
+        document.getElementById("blockedOverlay").style.display = "flex";
+      }
+
+      function unblockUser() {
+        document.getElementById("blockedOverlay").style.display = "none";
+      }
+
+      function restrictUser() {
+        document.getElementById("instaDialog").close();
+        alert("Restrizioni applicate all'utente.");
+      }
+
+      function toggleShareSubMenu() {
+        const sub = document.getElementById("socialShareOptions");
+        sub.style.display = sub.style.display === "flex" ? "none" : "flex";
+      }
+
+      function embedProfile() {
+        document.getElementById("instaDialog").close();
+        alert("Codice di incorporamento copiato negli appunti!");
+      }
+    </script>
+  </body>
+</html>
